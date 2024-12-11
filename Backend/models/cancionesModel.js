@@ -19,28 +19,13 @@ const obtenerPostDB = async () => {
     return rows;
 }
 
-const modificarPostDB = async (id,datos) => {
-    const datosActuales = await consultarDB(id);
-    if (!datosActuales) return false;
-    const datosActualizados = {
-        titulo: datos.titulo || datosActuales.titulo,
-        img: datos.img || datosActuales.img,
-        descripcion: datos.descripcion || datosActuales.descripcion,
-        likes: datos.likes || datosActuales.likes
-    };
-    const consulta = "UPDATE posts SET titulo= $1, img=$2, descripcion=$3, likes=$4 WHERE id=$5"
-    const values = [
-        datosActualizados.titulo,
-        datosActualizados.img,
-        datosActualizados.descripcion,
-        datosActualizados.likes,
-        id
-    ];
-    const {rows} = await pool.query(consulta,values);
-    return rows[0];
+const modificarPostDB = async (id, titulo,img,descripcion,likes) => {
+    const consulta = "UPDATE posts SET titulo = $1, img = $2, descripcion = $3, likes = $4 WHERE id = $5";
+    const values = [id,titulo,img,descripcion,likes];
+    const result = await pool.query(consulta, values);
 }
 const modificarLikeDB = async(id)=>{
-    const consulta = "UPDATE posts SET likes = likes + 1 WHERE id = $1"
+    const consulta = "UPDATE posts SET likes = likes + 1 WHERE id = $1 RETURNING *";
     const { rows } = await pool.query(consulta, [id]);
     return rows[0];
 }

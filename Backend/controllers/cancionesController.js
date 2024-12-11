@@ -17,14 +17,16 @@ const obtenerPost = async(req,res) =>{
         res.status(500).send(error);
     }
 }
-const modificarPost =  async(req,res) =>{
+const modificarPost = async(req,res) => {
     try {
-        const {id} = req.params;
-        const datos = req.query;
-        const data = await modificarPostDB(id,datos);
-        res.status(200).json(data);
+        const { id } = req.params;
+        const {titulo,img,descripcion,likes} = req.query;
+        
+        await modificarPostDB(id, titulo,img,descripcion,likes);
+        res.send("Post modificado con éxito");
+        
     } catch (error) {
-        res.status(500).send(error);
+        res.status(500).send("Error al modificar el post");
     }
 }
 const modificarLike = async(req,res) =>{
