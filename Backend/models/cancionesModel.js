@@ -3,8 +3,7 @@ const pool = require("../bd/conexion.js");
 const consultarDB = async (id) => {
     const consulta = "SELECT * FROM posts WHERE id=$1";
     const {rows,rowCount} = await pool.query(consulta,[id]);
-    if (rows.length === 0) return false;
-    return rows[0]
+    return rows;
 }
 
 const agregarPostDB = async ({titulo,img,descripcion,likes=0}) =>{
@@ -19,10 +18,14 @@ const obtenerPostDB = async () => {
     return rows;
 }
 
-const modificarPostDB = async (id, titulo,img,descripcion,likes) => {
+const modificarPostDB = async ( titulo,img,descripcion,likes,id) => {
     const consulta = "UPDATE posts SET titulo = $1, img = $2, descripcion = $3, likes = $4 WHERE id = $5";
-    const values = [id,titulo,img,descripcion,likes];
-    const result = await pool.query(consulta, values);
+    const values = [titulo,img,descripcion,likes,id];
+    const {rows, rowCount} = await pool.query(consulta, values);
+    if(rowCount === 1){
+        return consultarDB(id);
+    }
+    return false;
 }
 const modificarLikeDB = async(id)=>{
     const consulta = "UPDATE posts SET likes = likes + 1 WHERE id = $1 RETURNING *";

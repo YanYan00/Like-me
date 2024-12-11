@@ -22,8 +22,8 @@ const modificarPost = async(req,res) => {
         const { id } = req.params;
         const {titulo,img,descripcion,likes} = req.query;
         
-        await modificarPostDB(id, titulo,img,descripcion,likes);
-        res.send("Post modificado con éxito");
+        const data = await modificarPostDB(titulo,img,descripcion,likes,id);
+        res.status(200).json(data);
         
     } catch (error) {
         res.status(500).send("Error al modificar el post");
